@@ -1,19 +1,20 @@
 import { PieceBase } from "./pieces/PieceBase.js";
 
 export class Board {
-    private readonly width: number = 10;
-    private readonly height: number = 20;
-    private grid: boolean[][];
-    private pieces: PieceBase[];
-    private currentPiece: PieceBase | null;
-    private _lineCount: number;
+    private readonly ancho: number = 10;
+    private readonly alto: number = 20;
+    private grilla: boolean[][];
+    private piezas: PieceBase[];
+    private piezaActual: PieceBase | null;
+    private _cantidadLineas: number;
 
-    constructor(width: number = 10, height: number = 20) {
-        this.width = width;
-        this.height = height;
-        this.grid = Array.from({ length: height }, () => Array(width).fill(false));
-        this.pieces = [];
-        this.currentPiece = null;
-        this._lineCount = 0;
+    constructor(ancho: number = 10, alto: number = 20) {
+        this.ancho = ancho;
+        this.alto = alto;
+        this.grilla = Array.from({ length: alto }, () => Array(ancho).fill(false));
+        this.piezas = [];
+        this.piezaActual = null;
+        this._cantidadLineas = 0;
     }
 }
+

@@ -1,4 +1,4 @@
 export interface IRotator {
- rotateLeft(): void;
- rotateRight(): void;   
+    rotarIzquierda(): void;
+    rotarDerecha(): void;
 }

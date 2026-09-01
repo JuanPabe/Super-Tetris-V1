@@ -1,56 +1,59 @@
 import type { IRotator } from "./IRotator.js";
 
 export abstract class PieceBase implements IRotator {
-    private _name: string;
-    private _shape: boolean[][];
+    private _nombre: string;
+    private _forma: boolean[][];
 
-    constructor(name: string, shape: boolean[][]) {
-        this._name = name;
-        this._shape = shape;
+    constructor(nombre: string, forma: boolean[][]) {
+        this._nombre = nombre;
+        this._forma = forma;
     }
 
-    get name(): string {
-        return this._name;
+    get nombre(): string {
+        return this._nombre;
     }
 
-    get shape(): boolean[][] {
-        return this._shape;
+    get forma(): boolean[][] {
+        return this._forma;
     }
 
-    private set shape(value: boolean[][]) {
-        this._shape = value;
+    private set forma(valor: boolean[][]) {
+        this._forma = valor;
     }
 
-    rotateLeft(): void {
-    const original = this.shape;
-    const filas = original.length;
-    const columnas = original[0].length;
-    const nuevaForma: boolean[][] = [];
+    rotarIzquierda(): void {
+        const original = this.forma;
+        if (original.length === 0 || !original[0]) return;
+        const filas = original.length;
+        const columnas = original[0].length;
+        const nuevaForma: boolean[][] = [];
 
-    for (let col = columnas - 1; col >= 0; col--) {
-        const nuevaFila: boolean[] = [];
-        for (let fila = 0; fila < filas; fila++) {
-            nuevaFila.push(original[fila][col]?? false);
+        for (let col = columnas - 1; col >= 0; col--) {
+            const nuevaFila: boolean[] = [];
+            for (let fila = 0; fila < filas; fila++) {
+                nuevaFila.push(original[fila]?.[col] ?? false);
+            }
+            nuevaForma.push(nuevaFila);
         }
-        nuevaForma.push(nuevaFila);
+
+        this.forma = nuevaForma;
     }
 
-    this.shape = nuevaForma;
-}
-    rotateRight(): void {
-    const original = this.shape;
-    const filas = original.length;
-    const columnas = original[0].length;
-    const nuevaForma: boolean[][] = [];
+    rotarDerecha(): void {
+        const original = this.forma;
+        if (original.length === 0 || !original[0]) return;
+        const filas = original.length;
+        const columnas = original[0].length;
+        const nuevaForma: boolean[][] = [];
 
-    for (let col = 0; col < columnas; col++) {
-        const nuevaFila: boolean[] = [];
-        for (let fila = filas - 1; fila >= 0; fila--) {
-            nuevaFila.push(original[fila][col]?? false);
+        for (let col = 0; col < columnas; col++) {
+            const nuevaFila: boolean[] = [];
+            for (let fila = filas - 1; fila >= 0; fila--) {
+                nuevaFila.push(original[fila]?.[col] ?? false);
+            }
+            nuevaForma.push(nuevaFila);
         }
-        nuevaForma.push(nuevaFila);
-    }
 
-    this.shape = nuevaForma;
-}
+        this.forma = nuevaForma;
+    }
 }

@@ -1,8 +1,8 @@
-import { PieceBase} from "./PieceBase.js";
+import { PieceBase } from "./PieceBase.js";
 
 export class PieceStick extends PieceBase {
     constructor() {
-        super("Stick",[
+        super("Stick", [
             [true],
             [true],
             [true],
