@@ -34,6 +34,10 @@ export class Tetris {
         return this.reloj;
     }
 
+    get cantidadLineas(): number {
+        return this.tablero.cantidadLineas;
+    }
+
     comenzar(): void {
         this._estado = "jugando";
         this.generarYAgregarPieza();
