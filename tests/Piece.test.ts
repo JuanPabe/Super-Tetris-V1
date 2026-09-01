@@ -9,7 +9,7 @@ import { PieceDogRight } from "../src/pieces/PieceDogRight.js";
 
 describe("Tests de Piezas", () => {
     describe("Creación y forma inicial", () => {
-        it("Debería crear PieceT correctamente", () => {
+        it("Crea PieceT correctamente", () => {
             const t = new PieceT();
             expect(t.nombre).toBe("T");
             expect(t.forma).toEqual([
@@ -18,7 +18,7 @@ describe("Tests de Piezas", () => {
             ]);
         });
 
-        it("Debería crear PieceStick correctamente", () => {
+        it("Debe crear PieceStick correctamente", () => {
             const stick = new PieceStick();
             expect(stick.nombre).toBe("Stick");
             expect(stick.forma).toEqual([
@@ -29,7 +29,7 @@ describe("Tests de Piezas", () => {
             ]);
         });
 
-        it("Debería crear PieceSquare correctamente", () => {
+        it("Debe crear PieceSquare correctamente", () => {
             const square = new PieceSquare();
             expect(square.nombre).toBe("Square");
             expect(square.forma).toEqual([
@@ -38,7 +38,7 @@ describe("Tests de Piezas", () => {
             ]);
         });
         
-        it("Debería crear PieceL correctamente", () => {
+        it("Debe crear PieceL correctamente", () => {
             const l = new PieceL();
             expect(l.nombre).toBe("L");
             expect(l.forma).toEqual([
@@ -48,7 +48,7 @@ describe("Tests de Piezas", () => {
             ]);
         });
 
-        it("Debería crear PieceDog correctamente", () => {
+        it("Debe crear PieceDog correctamente", () => {
             const dog = new PieceDog();
             expect(dog.nombre).toBe("Dog");
             expect(dog.forma).toEqual([
