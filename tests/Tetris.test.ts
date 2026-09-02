@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { Tetris } from "../src/Tetris.js";
 import { PieceSquare } from "../src/pieces/PieceSquare.js";
 import { PieceStick } from "../src/pieces/PieceStick.js";
@@ -68,6 +68,7 @@ describe("Tests de Tetris (Juego Principal)", () => {
     });
 
     it("Permite rotar la pieza a la derecha e izquierda mientras el juego está activo", () => {
+        vi.spyOn(Math, "random").mockReturnValue(0);
         const juego = new Tetris();
         const stick = new PieceStick();
         juego.start(stick);
@@ -76,6 +77,7 @@ describe("Tests de Tetris (Juego Principal)", () => {
 
         expect(juego.rotarDerecha()).toBe(true);
         expect(juego.rotarIzquierda()).toBe(true);
+        vi.restoreAllMocks();
     });
 
     it("Cuando la pieza llega al fondo, tick genera una nueva pieza", () => {
@@ -117,7 +119,7 @@ describe("Tests de Tetris (Juego Principal)", () => {
         juego.comenzar();
 
         // Simulamos bloqueo en la parte superior del tablero
-        juego.obtTablero["_grilla"][0][4] = true;
+        juego.obtTablero["_grilla"][0]![4] = true;
 
         const continua = juego.tick();
         expect(continua).toBe(false);
@@ -141,7 +143,7 @@ describe("Tests de Tetris (Juego Principal)", () => {
         juego["enCurso"] = true;
 
         // Llenamos la fila 0 completa para que ninguna pieza pueda agregarse
-        juego.obtTablero["_grilla"][0].fill(true);
+        juego.obtTablero["_grilla"][0]!.fill(true);
 
         const resultado = juego.tick();
         expect(resultado).toBe(false);

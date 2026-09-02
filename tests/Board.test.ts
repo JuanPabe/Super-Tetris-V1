@@ -10,7 +10,7 @@ describe("Tests de Tablero (Board)", () => {
         const grilla = board.grilla;
         
         expect(grilla.length).toBe(20); // 20 filas
-        expect(grilla[0].length).toBe(10); // 10 columnas
+        expect(grilla[0]!.length).toBe(10); // 10 columnas
         
         // Verifica que este todo vacio (false)
         const estaVacia = grilla.every(fila => fila.every(celda => celda === false));
@@ -93,8 +93,8 @@ describe("Tests de Tablero (Board)", () => {
         
         // Verificamos que ahora hay celdas "true" en el fondo de la grilla
         const grilla = board.grilla;
-        expect(grilla[18][0]).toBe(true);
-        expect(grilla[19][1]).toBe(true);
+        expect(grilla[18]![0]).toBe(true);
+        expect(grilla[19]![1]).toBe(true);
     });
 
     it("Que al completarse una linea con varias piezas, se sume y se elimine esa linea", () => {
@@ -122,9 +122,9 @@ describe("Tests de Tablero (Board)", () => {
         // En este caso el cuadrado ocupo fila 18 y 19. Al borrarse la 19, la parte de arriba del cuadrado 
         // (fila 18) baja a la fila 19.
         const grilla = board.grilla;
-        expect(grilla[19][8]).toBe(true); // Parte superior del cuadrado cayo a la fila final
-        expect(grilla[19][9]).toBe(true);
-        expect(grilla[19][0]).toBe(false); // Las primeras 8 columnas se borraron
+        expect(grilla[19]![8]).toBe(true); // Parte superior del cuadrado cayo a la fila final
+        expect(grilla[19]![9]).toBe(true);
+        expect(grilla[19]![0]).toBe(false); // Las primeras 8 columnas se borraron
     });
 
     it("Debería retornar las piezas agregadas a través del getter piezas", () => {
@@ -161,7 +161,7 @@ describe("Tests de Tablero (Board)", () => {
     it("Debería detectar correctamente el estado de GameOver cuando hay bloques en la primera fila", () => {
         const board = new Board();
         expect(board.esGameOver()).toBe(false);
-        board["_grilla"][0][4] = true;
+        board["_grilla"][0]![4] = true;
         expect(board.esGameOver()).toBe(true);
     });
 
