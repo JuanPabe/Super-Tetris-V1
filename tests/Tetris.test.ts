@@ -71,6 +71,8 @@ describe("Tests de Tetris (Juego Principal)", () => {
         const juego = new Tetris();
         const stick = new PieceStick();
         juego.start(stick);
+        // Fijamos columna central para que la rotación horizontal (4 bloques) no colisione con las paredes
+        juego.obtTablero["_posicionActual"] = { x: 3, y: 0 };
 
         expect(juego.rotarDerecha()).toBe(true);
         expect(juego.rotarIzquierda()).toBe(true);

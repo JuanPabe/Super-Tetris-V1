@@ -96,20 +96,57 @@ describe("Tests de Piezas", () => {
             ]);
         });
 
-        it("PieceSquare NO debería cambiar de forma al rotar", () => {
+        it("PieceSquare NO debería cambiar de forma al rotar a derecha ni a izquierda", () => {
             const square = new PieceSquare();
             const originalShape = square.forma;
             square.rotarDerecha();
             expect(square.forma).toEqual(originalShape);
+            square.rotarIzquierda();
+            expect(square.forma).toEqual(originalShape);
         });
 
-        it("PieceT debería rotar a la derecha", () => {
+        it("PieceT debería rotar a la derecha y a la izquierda", () => {
             const t = new PieceT();
             t.rotarDerecha();
             expect(t.forma).toEqual([
                 [true, false],
                 [true, true],
                 [true, false]
+            ]);
+            t.rotarIzquierda();
+            expect(t.forma).toEqual([
+                [false, true, false],
+                [true, true, true]
+            ]);
+        });
+
+        it("PieceL debería rotar a la derecha y volver con rotarIzquierda", () => {
+            const l = new PieceL();
+            l.rotarDerecha();
+            expect(l.forma).toEqual([
+                [true, true, true],
+                [true, false, false]
+            ]);
+            l.rotarIzquierda();
+            expect(l.forma).toEqual([
+                [true, false],
+                [true, false],
+                [true, true]
+            ]);
+        });
+
+        it("PieceDog debería rotar a la derecha y volver con rotarIzquierda", () => {
+            const dog = new PieceDog();
+            dog.rotarDerecha();
+            expect(dog.forma).toEqual([
+                [true, false],
+                [true, true],
+                [false, true]
+            ]);
+            dog.rotarIzquierda();
+            expect(dog.forma).toEqual([
+                [false, true, true],
+                [true, true, false]
             ]);
         });
         
