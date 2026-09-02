@@ -1,4 +1,4 @@
-﻿import { Board } from "./Board.js";
+import { Board } from "./Board.js";
 import { Clock } from "./Clock.js";
 import { PieceBase } from "./pieces/PieceBase.js";
 import { PieceT } from "./pieces/PieceT.js";

@@ -71,10 +71,19 @@ export class Board {
     rotarPiezaActual(direccion: "izquierda" | "derecha" = "derecha"): boolean {
         if (!this._piezaActual || !this._posicionActual) return false;
 
-        direccion === "derecha" ? this._piezaActual.rotarDerecha() : this._piezaActual.rotarIzquierda();
+        const rotaciones: Record<"izquierda" | "derecha", () => void> = {
+            derecha: () => this._piezaActual?.rotarDerecha(),
+            izquierda: () => this._piezaActual?.rotarIzquierda()
+        };
+        const reversiones: Record<"izquierda" | "derecha", () => void> = {
+            derecha: () => this._piezaActual?.rotarIzquierda(),
+            izquierda: () => this._piezaActual?.rotarDerecha()
+        };
+
+        rotaciones[direccion]();
 
         if (!this.puedeColocar(this._piezaActual, this._posicionActual.x, this._posicionActual.y)) {
-            direccion === "derecha" ? this._piezaActual.rotarIzquierda() : this._piezaActual.rotarDerecha();
+            reversiones[direccion]();
             return false;
         }
 

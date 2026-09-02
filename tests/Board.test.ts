@@ -1,4 +1,4 @@
-﻿import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "vitest";
 import { Board } from "../src/Board.js";
 import { PieceSquare } from "../src/pieces/PieceSquare.js";
 import { PieceStick } from "../src/pieces/PieceStick.js";
