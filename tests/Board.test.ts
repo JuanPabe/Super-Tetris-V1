@@ -126,4 +126,51 @@ describe("Tests de Tablero (Board)", () => {
         expect(grilla[19][9]).toBe(true);
         expect(grilla[19][0]).toBe(false); // Las primeras 8 columnas se borraron
     });
+
+    it("Debería retornar las piezas agregadas a través del getter piezas", () => {
+        const board = new Board();
+        expect(board.piezas).toEqual([]);
+        const square = new PieceSquare();
+        board.agregarPieza(square, 0);
+        expect(board.piezas.length).toBe(1);
+        expect(board.piezas[0]).toBe(square);
+    });
+
+    it("Debería revertir la rotación si colisiona con el borde del tablero (derecha e izquierda)", () => {
+        const board = new Board();
+        const stick = new PieceStick();
+        board.agregarPieza(stick, 9);
+
+        const pudoRotarDerecha = board.rotarPiezaActual("derecha");
+        expect(pudoRotarDerecha).toBe(false);
+        expect(board.piezaActual?.forma.length).toBe(4);
+
+        const pudoRotarIzquierda = board.rotarPiezaActual("izquierda");
+        expect(pudoRotarIzquierda).toBe(false);
+        expect(board.piezaActual?.forma.length).toBe(4);
+    });
+
+    it("Debería retornar false al intentar rotar o mover sin pieza actual", () => {
+        const board = new Board();
+        expect(board.moverAbajo()).toBe(false);
+        expect(board.rotarPiezaActual("derecha")).toBe(false);
+        expect(board.rotarPiezaActual("izquierda")).toBe(false);
+        expect(board.posicionActual).toBeNull();
+    });
+
+    it("Debería detectar correctamente el estado de GameOver cuando hay bloques en la primera fila", () => {
+        const board = new Board();
+        expect(board.esGameOver()).toBe(false);
+        board["_grilla"][0][4] = true;
+        expect(board.esGameOver()).toBe(true);
+    });
+
+    it("Permite agregar pieza sin especificar columna (columna aleatoria válida)", () => {
+        const board = new Board();
+        const square = new PieceSquare();
+        const agregada = board.agregarPieza(square);
+        expect(agregada).toBe(true);
+        expect(board.posicionActual?.x).toBeGreaterThanOrEqual(0);
+        expect(board.posicionActual?.x).toBeLessThanOrEqual(8);
+    });
 });
