@@ -57,34 +57,16 @@ export class Tetris {
     }
 
     tick(): boolean {
-        if (this._estado !== "jugando" && !this.enCurso) return false;
+        if (!this.isEnCurso) return false;
 
         this._estado = "jugando";
         this.enCurso = true;
         this.reloj.avanzar();
 
-        if (!this.tablero.piezaActual) {
-            const agregada = this.generarYAgregarPieza();
-            if (!agregada) {
-                this._estado = "finalizado";
-                this.enCurso = false;
-                return false;
-            }
-        } else {
-            const seMovio = this.tablero.moverAbajo();
-            if (!seMovio) {
-                if (this.tablero.cantidadLineas >= this.lineasObjetivo || this.tablero.esGameOver()) {
-                    this._estado = "finalizado";
-                    this.enCurso = false;
-                    return false;
-                }
-                this.generarYAgregarPieza();
-            }
-        }
+        this.procesarPaso();
 
-        if (this.tablero.cantidadLineas >= this.lineasObjetivo || this.tablero.esGameOver()) {
-            this._estado = "finalizado";
-            this.enCurso = false;
+        if (this.haFinalizado()) {
+            this.finalizarJuego();
             return false;
         }
 
@@ -92,13 +74,45 @@ export class Tetris {
     }
 
     rotarIzquierda(): boolean {
-        if (this._estado !== "jugando" && !this.enCurso) return false;
+        if (!this.isEnCurso) return false;
         return this.tablero.rotarPiezaActual("izquierda");
     }
 
     rotarDerecha(): boolean {
-        if (this._estado !== "jugando" && !this.enCurso) return false;
+        if (!this.isEnCurso) return false;
         return this.tablero.rotarPiezaActual("derecha");
+    }
+
+    private procesarPaso(): void {
+        if (!this.tablero.piezaActual) {
+            this.incorporarNuevaPieza();
+            return;
+        }
+
+        this.hacerDescenderPieza();
+    }
+
+    private incorporarNuevaPieza(): void {
+        const agregada = this.generarYAgregarPieza();
+        if (!agregada) {
+            this.finalizarJuego();
+        }
+    }
+
+    private hacerDescenderPieza(): void {
+        const pudoMover = this.tablero.moverAbajo();
+        if (!pudoMover && !this.haFinalizado()) {
+            this.generarYAgregarPieza();
+        }
+    }
+
+    private haFinalizado(): boolean {
+        return this.tablero.cantidadLineas >= this.lineasObjetivo || this.tablero.esGameOver();
+    }
+
+    private finalizarJuego(): void {
+        this._estado = "finalizado";
+        this.enCurso = false;
     }
 
     private generarYAgregarPieza(): boolean {
