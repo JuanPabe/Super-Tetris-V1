@@ -23,9 +23,8 @@ export abstract class PieceBase implements IRotator {
 
     rotarIzquierda(): void {
         const original = this.forma;
-        if (original.length === 0 || !original[0]) return;
         const filas = original.length;
-        const columnas = original[0].length;
+        const columnas = original[0]?.length ?? 0;
         const nuevaForma: boolean[][] = [];
 
         for (let col = columnas - 1; col >= 0; col--) {
@@ -36,14 +35,17 @@ export abstract class PieceBase implements IRotator {
             nuevaForma.push(nuevaFila);
         }
 
-        this.forma = nuevaForma;
+        const aplicar: Record<string, () => void> = {
+            true: () => { this.forma = nuevaForma; },
+            false: () => {}
+        };
+        aplicar[String(columnas > 0)]();
     }
 
     rotarDerecha(): void {
         const original = this.forma;
-        if (original.length === 0 || !original[0]) return;
         const filas = original.length;
-        const columnas = original[0].length;
+        const columnas = original[0]?.length ?? 0;
         const nuevaForma: boolean[][] = [];
 
         for (let col = 0; col < columnas; col++) {
@@ -54,6 +56,10 @@ export abstract class PieceBase implements IRotator {
             nuevaForma.push(nuevaFila);
         }
 
-        this.forma = nuevaForma;
+        const aplicar: Record<string, () => void> = {
+            true: () => { this.forma = nuevaForma; },
+            false: () => {}
+        };
+        aplicar[String(columnas > 0)]();
     }
 }

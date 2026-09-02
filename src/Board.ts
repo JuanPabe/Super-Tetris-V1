@@ -40,66 +40,93 @@ export class Board {
         const anchoPieza = pieza.forma[0]?.length ?? 1;
         const posX = columna ?? Math.floor(Math.random() * Math.max(1, this.ancho - anchoPieza + 1));
         const posY = 0;
+        const sePuede = this.puedeColocar(pieza, posX, posY);
 
-        if (!this.puedeColocar(pieza, posX, posY)) {
-            return false;
-        }
+        const respuestas: Record<string, () => boolean> = {
+            true: () => {
+                this._piezaActual = pieza;
+                this._posicionActual = { x: posX, y: posY };
+                this._piezas.push(pieza);
+                return true;
+            },
+            false: () => false
+        };
 
-        this._piezaActual = pieza;
-        this._posicionActual = { x: posX, y: posY };
-        this._piezas.push(pieza);
-        return true;
+        return respuestas[String(sePuede)]();
     }
 
     moverAbajo(): boolean {
-        if (!this._piezaActual || !this._posicionActual) return false;
+        const tienePieza = Boolean(this._piezaActual && this._posicionActual);
+        const manejadores: Record<string, () => boolean> = {
+            false: () => false,
+            true: () => {
+                const pieza = this._piezaActual!;
+                const pos = this._posicionActual!;
+                const nuevaY = pos.y + 1;
+                const puedeMoverse = this.puedeColocar(pieza, pos.x, nuevaY);
 
-        const nuevaY = this._posicionActual.y + 1;
+                const acciones: Record<string, () => boolean> = {
+                    true: () => {
+                        pos.y = nuevaY;
+                        return true;
+                    },
+                    false: () => {
+                        this.fijarPiezaActual();
+                        this.limpiarLineasCompletas();
+                        this._piezaActual = null;
+                        this._posicionActual = null;
+                        return false;
+                    }
+                };
 
-        if (this.puedeColocar(this._piezaActual, this._posicionActual.x, nuevaY)) {
-            this._posicionActual.y = nuevaY;
-            return true;
-        }
+                return acciones[String(puedeMoverse)]();
+            }
+        };
 
-        this.fijarPiezaActual();
-        this.limpiarLineasCompletas();
-        this._piezaActual = null;
-        this._posicionActual = null;
-        return false;
+        return manejadores[String(tienePieza)]();
     }
 
     rotarPiezaActual(direccion: "izquierda" | "derecha" = "derecha"): boolean {
-        if (!this._piezaActual || !this._posicionActual) return false;
+        const tienePieza = Boolean(this._piezaActual && this._posicionActual);
+        const manejadores: Record<string, () => boolean> = {
+            false: () => false,
+            true: () => {
+                const pieza = this._piezaActual!;
+                const pos = this._posicionActual!;
 
-        const rotaciones: Record<"izquierda" | "derecha", () => void> = {
-            derecha: () => this._piezaActual?.rotarDerecha(),
-            izquierda: () => this._piezaActual?.rotarIzquierda()
+                const rotaciones: Record<"izquierda" | "derecha", () => void> = {
+                    derecha: () => pieza.rotarDerecha(),
+                    izquierda: () => pieza.rotarIzquierda()
+                };
+                const reversiones: Record<"izquierda" | "derecha", () => void> = {
+                    derecha: () => pieza.rotarIzquierda(),
+                    izquierda: () => pieza.rotarDerecha()
+                };
+
+                rotaciones[direccion]();
+
+                const valida = this.puedeColocar(pieza, pos.x, pos.y);
+                const resolver: Record<string, () => boolean> = {
+                    true: () => true,
+                    false: () => {
+                        reversiones[direccion]();
+                        return false;
+                    }
+                };
+
+                return resolver[String(valida)]();
+            }
         };
-        const reversiones: Record<"izquierda" | "derecha", () => void> = {
-            derecha: () => this._piezaActual?.rotarIzquierda(),
-            izquierda: () => this._piezaActual?.rotarDerecha()
-        };
 
-        rotaciones[direccion]();
-
-        if (!this.puedeColocar(this._piezaActual, this._posicionActual.x, this._posicionActual.y)) {
-            reversiones[direccion]();
-            return false;
-        }
-
-        return true;
+        return manejadores[String(tienePieza)]();
     }
 
     limpiarLineasCompletas(): number {
         const lineasIncompletas = this._grilla.filter((fila) => !fila.every((celda) => celda));
         const lineasEliminadas = this.alto - lineasIncompletas.length;
-
-        if (lineasEliminadas > 0) {
-            const nuevasFilasVacias = Array.from({ length: lineasEliminadas }, () => Array(this.ancho).fill(false));
-            this._grilla = [...nuevasFilasVacias, ...lineasIncompletas];
-            this._cantidadLineas += lineasEliminadas;
-        }
-
+        const nuevasFilasVacias = Array.from({ length: lineasEliminadas }, () => Array(this.ancho).fill(false));
+        this._grilla = [...nuevasFilasVacias, ...lineasIncompletas];
+        this._cantidadLineas += lineasEliminadas;
         return lineasEliminadas;
     }
 
@@ -110,11 +137,10 @@ export class Board {
     private puedeColocar(pieza: PieceBase, posX: number, posY: number): boolean {
         return pieza.forma.every((fila, fIndex) =>
             fila.every((celda, cIndex) => {
-                if (!celda) return true;
                 const targetY = posY + fIndex;
                 const targetX = posX + cIndex;
                 const celdaFila = this._grilla[targetY];
-                return (
+                const dentroYVacio = Boolean(
                     targetX >= 0 &&
                     targetX < this.ancho &&
                     targetY >= 0 &&
@@ -122,23 +148,32 @@ export class Board {
                     celdaFila !== undefined &&
                     !celdaFila[targetX]
                 );
+                return !celda || dentroYVacio;
             })
         );
     }
 
     private fijarPiezaActual(): void {
-        if (!this._piezaActual || !this._posicionActual) return;
-
-        const { x: posX, y: posY } = this._posicionActual;
-        this._piezaActual.forma.forEach((fila, fIndex) =>
-            fila.forEach((celda, cIndex) => {
-                const targetY = posY + fIndex;
-                const targetX = posX + cIndex;
-                const celdaFila = this._grilla[targetY];
-                if (celda && celdaFila && targetX >= 0 && targetX < this.ancho) {
-                    celdaFila[targetX] = true;
-                }
-            })
-        );
+        const tienePieza = Boolean(this._piezaActual && this._posicionActual);
+        const manejador: Record<string, () => void> = {
+            false: () => {},
+            true: () => {
+                const pos = this._posicionActual!;
+                this._piezaActual!.forma.forEach((fila, fIndex) =>
+                    fila.forEach((celda, cIndex) => {
+                        const targetY = pos.y + fIndex;
+                        const targetX = pos.x + cIndex;
+                        const celdaFila = this._grilla[targetY];
+                        const pintar: Record<string, () => void> = {
+                            true: () => { celdaFila![targetX] = true; },
+                            false: () => {}
+                        };
+                        const debePintar = Boolean(celda && celdaFila && targetX >= 0 && targetX < this.ancho);
+                        pintar[String(debePintar)]();
+                    })
+                );
+            }
+        };
+        manejador[String(tienePieza)]();
     }
 }

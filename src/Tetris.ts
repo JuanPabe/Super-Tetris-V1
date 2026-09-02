@@ -57,53 +57,72 @@ export class Tetris {
     }
 
     tick(): boolean {
-        if (!this.isEnCurso) return false;
+        const accionesEnCurso: Record<string, () => boolean> = {
+            false: () => false,
+            true: () => {
+                this._estado = "jugando";
+                this.enCurso = true;
+                this.reloj.avanzar();
 
-        this._estado = "jugando";
-        this.enCurso = true;
-        this.reloj.avanzar();
+                this.procesarPaso();
 
-        this.procesarPaso();
+                const respuestasFin: Record<string, () => boolean> = {
+                    true: () => {
+                        this.finalizarJuego();
+                        return false;
+                    },
+                    false: () => this._estado === "jugando"
+                };
 
-        if (this.haFinalizado()) {
-            this.finalizarJuego();
-            return false;
-        }
+                return respuestasFin[String(this.haFinalizado())]();
+            }
+        };
 
-        return this._estado === "jugando";
+        return accionesEnCurso[String(this.isEnCurso)]();
     }
 
     rotarIzquierda(): boolean {
-        if (!this.isEnCurso) return false;
-        return this.tablero.rotarPiezaActual("izquierda");
+        const acciones: Record<string, () => boolean> = {
+            false: () => false,
+            true: () => this.tablero.rotarPiezaActual("izquierda")
+        };
+        return acciones[String(this.isEnCurso)]();
     }
 
     rotarDerecha(): boolean {
-        if (!this.isEnCurso) return false;
-        return this.tablero.rotarPiezaActual("derecha");
+        const acciones: Record<string, () => boolean> = {
+            false: () => false,
+            true: () => this.tablero.rotarPiezaActual("derecha")
+        };
+        return acciones[String(this.isEnCurso)]();
     }
 
     private procesarPaso(): void {
-        if (!this.tablero.piezaActual) {
-            this.incorporarNuevaPieza();
-            return;
-        }
-
-        this.hacerDescenderPieza();
+        const hayPieza = Boolean(this.tablero.piezaActual);
+        const pasos: Record<string, () => void> = {
+            false: () => { this.incorporarNuevaPieza(); },
+            true: () => { this.hacerDescenderPieza(); }
+        };
+        pasos[String(hayPieza)]();
     }
 
     private incorporarNuevaPieza(): void {
         const agregada = this.generarYAgregarPieza();
-        if (!agregada) {
-            this.finalizarJuego();
-        }
+        const manejarAgregada: Record<string, () => void> = {
+            false: () => { this.finalizarJuego(); },
+            true: () => {}
+        };
+        manejarAgregada[String(agregada)]();
     }
 
     private hacerDescenderPieza(): void {
         const pudoMover = this.tablero.moverAbajo();
-        if (!pudoMover && !this.haFinalizado()) {
-            this.generarYAgregarPieza();
-        }
+        const debeGenerar = Boolean(!pudoMover && !this.haFinalizado());
+        const manejarDescenso: Record<string, () => void> = {
+            true: () => { this.generarYAgregarPieza(); },
+            false: () => {}
+        };
+        manejarDescenso[String(debeGenerar)]();
     }
 
     private haFinalizado(): boolean {
@@ -126,7 +145,7 @@ export class Tetris {
             () => new PieceDogRight(),
         ];
         const indice = Math.floor(Math.random() * fabricas.length);
-        const nuevaPieza = fabricas[indice]?.() ?? new PieceSquare();
+        const nuevaPieza = fabricas[indice]();
         return this.tablero.agregarPieza(nuevaPieza);
     }
 }
