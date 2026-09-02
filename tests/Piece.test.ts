@@ -56,6 +56,25 @@ describe("Tests de Piezas", () => {
                 [true, true, false]
             ]);
         });
+
+        it("Debe crear PieceLRight correctamente", () => {
+            const lRight = new PieceLRight();
+            expect(lRight.nombre).toBe("LRight");
+            expect(lRight.forma).toEqual([
+                [false, true],
+                [false, true],
+                [true, true]
+            ]);
+        });
+
+        it("Debe crear PieceDogRight correctamente", () => {
+            const dogRight = new PieceDogRight();
+            expect(dogRight.nombre).toBe("DogRight");
+            expect(dogRight.forma).toEqual([
+                [true, true, false],
+                [false, true, true]
+            ]);
+        });
     });
 
     describe("Rotación de piezas", () => {
@@ -102,6 +121,49 @@ describe("Tests de Piezas", () => {
             t.rotarDerecha();
             t.rotarDerecha();
             expect(t.forma).toEqual(originalShape);
+        });
+
+        it("PieceLRight debería rotar a la derecha y volver con rotarIzquierda", () => {
+            const lRight = new PieceLRight();
+            lRight.rotarDerecha();
+            expect(lRight.forma).toEqual([
+                [true, false, false],
+                [true, true, true]
+            ]);
+            lRight.rotarIzquierda();
+            expect(lRight.forma).toEqual([
+                [false, true],
+                [false, true],
+                [true, true]
+            ]);
+        });
+
+        it("PieceDogRight debería rotar a la derecha y volver con rotarIzquierda", () => {
+            const dogRight = new PieceDogRight();
+            dogRight.rotarDerecha();
+            expect(dogRight.forma).toEqual([
+                [false, true],
+                [true, true],
+                [true, false]
+            ]);
+            dogRight.rotarIzquierda();
+            expect(dogRight.forma).toEqual([
+                [true, true, false],
+                [false, true, true]
+            ]);
+        });
+
+        it("PieceBase no debería fallar al rotar con forma vacía", () => {
+            class PieceVacia extends PieceT {
+                constructor() {
+                    super();
+                    (this as any)._forma = [];
+                }
+            }
+            const vacia = new PieceVacia();
+            vacia.rotarDerecha();
+            vacia.rotarIzquierda();
+            expect(vacia.forma).toEqual([]);
         });
     });
 });
