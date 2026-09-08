@@ -157,4 +157,54 @@ describe("Tests de Tetris (Juego Principal)", () => {
         }
         expect(juego.obtTablero.piezas.length).toBeGreaterThan(0);
     });
+    
+    it("Ganar la partida al completar 2 lineas llenando el piso con cuadrados", () => {
+        const juego = new Tetris(2);
+        const tablero = juego.obtTablero;
+
+        juego["_estado"] = "jugando";
+        juego["enCurso"] = true;
+
+        const columnas = [0, 2, 4, 6, 8];
+        for (const col of columnas) {
+            const square = new PieceSquare();
+            tablero.agregarPieza(square, col);
+            while (tablero.moverAbajo()) {}
+        }
+
+        expect(juego.cantidadLineas).toBe(2);
+
+        const enCurso = juego.tick();
+
+        expect(enCurso).toBe(false);
+        expect(juego.estado).toBe("finalizado");
+        expect(juego.isEnCurso).toBe(false);
+    });
+
+    it("Perder la partida al apilar sticks verticales hasta tocar el techo del board", () => {
+        const juego = new Tetris();
+        const tablero = juego.obtTablero;
+
+        juego["_estado"] = "jugando";
+        juego["enCurso"] = true;
+
+        for (let i = 0; i < 5; i++) {
+            const stick = new PieceStick();
+            stick.rotarDerecha();
+            stick.rotarDerecha();
+            tablero.agregarPieza(stick, 0);
+            while (tablero.moverAbajo()) {}
+        }
+
+        expect(tablero.esGameOver()).toBe(true);
+
+        const pudoEntrar = tablero.agregarPieza(new PieceStick(), 0);
+        expect(pudoEntrar).toBe(false);
+
+        const enCurso = juego.tick();
+
+        expect(enCurso).toBe(false);
+        expect(juego.estado).toBe("finalizado");
+        expect(juego.isEnCurso).toBe(false);
+    });
 });
