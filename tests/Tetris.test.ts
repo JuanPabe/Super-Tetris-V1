@@ -108,7 +108,7 @@ describe("Tests de Tetris (Juego Principal)", () => {
         juego.tick();
 
         expect(juego.cantidadLineas).toBe(1);
-        expect(juego.estado).toBe("finalizado");
+        expect(juego.estado).toBe("ganaste");
         expect(juego.isEnCurso).toBe(false);
     });
 
@@ -121,7 +121,7 @@ describe("Tests de Tetris (Juego Principal)", () => {
 
         const continua = juego.tick();
         expect(continua).toBe(false);
-        expect(juego.estado).toBe("finalizado");
+        expect(juego.estado).toBe("perdiste");
         expect(juego.isEnCurso).toBe(false);
     });
 
@@ -145,7 +145,7 @@ describe("Tests de Tetris (Juego Principal)", () => {
 
         const resultado = juego.tick();
         expect(resultado).toBe(false);
-        expect(juego.estado).toBe("finalizado");
+        expect(juego.estado).toBe("perdiste");
     });
 
     it("Genera aleatoriamente las diferentes fábricas de piezas", () => {
@@ -177,7 +177,7 @@ describe("Tests de Tetris (Juego Principal)", () => {
         const enCurso = juego.tick();
 
         expect(enCurso).toBe(false);
-        expect(juego.estado).toBe("finalizado");
+        expect(juego.estado).toBe("ganaste");
         expect(juego.isEnCurso).toBe(false);
     });
 
@@ -204,7 +204,7 @@ describe("Tests de Tetris (Juego Principal)", () => {
         const enCurso = juego.tick();
 
         expect(enCurso).toBe(false);
-        expect(juego.estado).toBe("finalizado");
+        expect(juego.estado).toBe("perdiste");
         expect(juego.isEnCurso).toBe(false);
     });
 });

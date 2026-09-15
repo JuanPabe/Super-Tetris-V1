@@ -12,7 +12,7 @@ import { PieceDogRight } from "./pieces/PieceDogRight.js";
 export class Tetris {
     private tablero: Board;
     private reloj: Clock;
-    private _estado: "detenido" | "jugando" | "finalizado";
+    private _estado: "detenido" | "jugando" | "ganaste" | "perdiste";
     private lineasObjetivo: number;
     private enCurso: boolean = false;
 
@@ -24,7 +24,7 @@ export class Tetris {
         this.enCurso = false;
     }
 
-    get estado(): "detenido" | "jugando" | "finalizado" {
+    get estado(): "detenido" | "jugando" | "ganaste" | "perdiste" {
         return this._estado;
     }
 
@@ -130,7 +130,12 @@ export class Tetris {
     }
 
     private finalizarJuego(): void {
-        this._estado = "finalizado";
+        const ganaste = this.tablero.cantidadLineas >= this.lineasObjetivo;
+        const estadosFinales: Record<string, "ganaste" | "perdiste"> = {
+            true: "ganaste",
+            false: "perdiste"
+        };
+        this._estado = estadosFinales[String(ganaste)];
         this.enCurso = false;
     }
 
