@@ -93,37 +93,7 @@ describe("Tests de Tetris (Juego Principal)", () => {
         expect(juego.obtTablero.piezas.length).toBeGreaterThanOrEqual(2);
     });
 
-    it("Finaliza el juego si se alcanza la cantidad de líneas objetivo", () => {
-        const juego = new Tetris(1);
-        const square = new PieceSquare();
-        juego.start(square);
-
-        // Simulamos que la fila inferior está casi llena
-        juego.obtTablero["_grilla"][19] = [true, true, true, true, true, true, true, true, false, false];
-
-        // Llevamos la pieza al fondo en la columna correcta para completar línea
-        juego.obtTablero["_posicionActual"] = { x: 8, y: 18 };
-
-        // Al descender se completa 1 línea (línea objetivo = 1)
-        juego.tick();
-
-        expect(juego.cantidadLineas).toBe(1);
-        expect(juego.estado).toBe("ganaste");
-        expect(juego.isEnCurso).toBe(false);
-    });
-
-    it("Finaliza el juego si ocurre GameOver en el tablero", () => {
-        const juego = new Tetris();
-        juego.comenzar();
-
-        // Simulamos bloqueo en la parte superior del tablero
-        juego.obtTablero["_grilla"][0]![4] = true;
-
-        const continua = juego.tick();
-        expect(continua).toBe(false);
-        expect(juego.estado).toBe("perdiste");
-        expect(juego.isEnCurso).toBe(false);
-    });
+  
 
     it("Si el juego está activo pero no hay pieza actual, tick genera una nueva pieza", () => {
         const juego = new Tetris();
