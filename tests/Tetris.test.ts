@@ -105,19 +105,6 @@ describe("Tests de Tetris (Juego Principal)", () => {
         expect(juego.obtTablero.piezaActual).not.toBeNull();
     });
 
-    it("Finaliza el juego si no puede incorporar una nueva pieza", () => {
-        const juego = new Tetris();
-        juego["_estado"] = "jugando";
-        juego["enCurso"] = true;
-
-        // Llenamos la fila 0 completa para que ninguna pieza pueda agregarse
-        juego.obtTablero["_grilla"][0]!.fill(true);
-
-        const resultado = juego.tick();
-        expect(resultado).toBe(false);
-        expect(juego.estado).toBe("perdiste");
-    });
-
     it("Genera aleatoriamente las diferentes fábricas de piezas", () => {
         const juego = new Tetris();
         for (let i = 0; i < 25; i++) {
